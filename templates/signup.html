@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Sign up &mdash; NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">Create account</p>
+  <h1 style="font-size:1.8rem;">Sign up for NestCampus</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<p style="color:var(--coral);">{{ messages[0] }}</p>{% endif %}
+  {% endwith %}
+
+  <form class="card-form" method="POST">
+    <label>I am a...</label>
+    <div class="pay-options" style="margin-top:0;">
+      <label class="pay-option">
+        <input type="radio" name="role" value="student" required onclick="updateSelected(this)" checked>
+        <div class="icon">🎓</div>
+        <div><div style="font-weight:600;">Student</div><div style="color:var(--muted);font-size:.8rem;">Browse and book hostel rooms</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="role" value="owner" onclick="updateSelected(this)">
+        <div class="icon">🏠</div>
+        <div><div style="font-weight:600;">Hostel owner</div><div style="color:var(--muted);font-size:.8rem;">List and manage your hostel</div></div>
+      </label>
+    </div>
+
+    <label for="name">Full name</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Akosua Mensah" required>
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" placeholder="you@example.com" required>
+    <label for="password">Password</label>
+    <input type="text" id="password" name="password" placeholder="Choose a password" required>
+
+    <div style="margin-top:22px;">
+      <button type="submit" class="btn-gold">Create account</button>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin-top:16px;">Already have an account? <a href="{{ url_for('login') }}" style="color:var(--gold);">Log in</a></p>
+  </form>
+</section>
+<script>
+function updateSelected(el){
+  document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+  el.closest('.pay-option').classList.add('selected');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('input[name=role]:checked').closest('.pay-option').classList.add('selected');
+});
+</script>
+{% endblock %}

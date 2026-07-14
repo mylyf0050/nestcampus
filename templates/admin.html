@@ -2,8 +2,17 @@
 {% block title %}Owner dashboard &mdash; NestCampus{% endblock %}
 {% block content %}
 <section class="section">
-  <p class="eyebrow">Owner dashboard</p>
-  <h1 style="font-size:1.8rem;">Bookings overview</h1>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p class="eyebrow">Owner dashboard</p>
+      <h1 style="font-size:1.8rem;">Bookings overview</h1>
+    </div>
+    <a href="{{ url_for('add_hostel') }}" class="btn-gold" style="height:fit-content;">+ Add hostel</a>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<p style="color:var(--green);margin-top:14px;">{{ messages[0] }}</p>{% endif %}
+  {% endwith %}
 
   <div class="stat-row">
     <div class="stat"><div class="num">{{ bookings|length }}</div><div class="label">Total bookings</div></div>

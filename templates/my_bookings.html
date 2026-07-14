@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}My bookings &mdash; NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">Your account</p>
+  <h1 style="font-size:1.8rem;">My bookings</h1>
+
+  {% if bookings %}
+  <table>
+    <thead><tr><th>Reference</th><th>Hostel</th><th>Room</th><th>Method</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td class="mono">{{ b.reference }}</td>
+        <td>{{ b.room.hostel.name }}</td>
+        <td>{{ b.room.room_type }}</td>
+        <td>{{ b.payment_method }}</td>
+        <td class="mono">GH₵ {{ b.room.price_per_semester }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:var(--muted);">You haven't booked a room yet. <a href="{{ url_for('index') }}" style="color:var(--gold);">Browse hostels</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

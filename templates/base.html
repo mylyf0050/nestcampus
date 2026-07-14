@@ -10,7 +10,19 @@
 <div class="kente-stripe"></div>
 <nav class="nav">
   <a href="{{ url_for('index') }}" class="brand">Nest<span>Campus</span></a>
-  <a href="{{ url_for('admin_dashboard') }}" class="btn">Owner dashboard</a>
+  <div style="display:flex;align-items:center;gap:14px;">
+    {% if current_user %}
+      {% if current_user.role == 'owner' %}
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-outline" style="padding:8px 16px;border-radius:999px;">Owner dashboard</a>
+      {% else %}
+        <a href="{{ url_for('my_bookings') }}" class="btn-outline" style="padding:8px 16px;border-radius:999px;">My bookings</a>
+      {% endif %}
+      <a href="{{ url_for('logout') }}" style="color:var(--muted);font-size:.88rem;">Log out</a>
+    {% else %}
+      <a href="{{ url_for('login') }}" style="color:var(--muted);font-size:.88rem;">Log in</a>
+      <a href="{{ url_for('signup') }}" class="btn">Sign up</a>
+    {% endif %}
+  </div>
 </nav>
 
 {% block content %}{% endblock %}
