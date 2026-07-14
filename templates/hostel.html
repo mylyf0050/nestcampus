@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ hostel.name }} &mdash; NestCampus{% endblock %}
+{% block content %}
+<div class="detail-hero">
+  <div class="thumb">
+    <img src="{{ url_for('static', filename='img/' + hostel.image) }}" style="width:100%;height:100%;object-fit:cover;" alt="{{ hostel.name }}">
+  </div>
+  <div id="map"></div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <p class="eyebrow">{{ hostel.area }}</p>
+  <h1 style="font-size:2rem;">{{ hostel.name }}</h1>
+  <p class="sub" style="max-width:70ch;">{{ hostel.description }}</p>
+  <div style="margin:14px 0 30px;">
+    {% for a in hostel.amenities.split(',') %}<span class="tag">{{ a }}</span>{% endfor %}
+  </div>
+
+  <h2 style="font-size:1.3rem;margin-bottom:16px;">Room options</h2>
+  {% for room in hostel.rooms %}
+  <div class="room-row">
+    <div>
+      <div style="font-weight:600;">{{ room.room_type }}</div>
+      <div class="avail {{ 'low' if room.available <= 3 else '' }}">{{ room.available }} slots left of {{ room.total_slots }}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div class="price mono" style="color:var(--gold);">GH₵ {{ room.price_per_semester }} <span style="color:var(--muted);font-size:.75rem;">/ semester</span></div>
+      {% if room.available > 0 %}
+      <a href="{{ url_for('book', room_id=room.id) }}" class="btn-gold">Book</a>
+      {% else %}
+      <span class="btn-outline" style="opacity:.5;">Full</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map', {zoomControl:false, dragging:true, scrollWheelZoom:false}).setView([{{ hostel.lat }}, {{ hostel.lng }}], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'&copy; OpenStreetMap'}).addTo(map);
+  L.marker([{{ hostel.lat }}, {{ hostel.lng }}]).addTo(map).bindPopup("{{ hostel.name }}").openPopup();
+</script>
+{% endblock %}

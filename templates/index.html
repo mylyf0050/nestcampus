@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Greater Accra &middot; Semester bookings</p>
+    <h1>Find your room near campus. Pay your way.</h1>
+    <p class="sub">Browse verified hostels near Legon, book a room for the semester, and pay by Mobile Money, card, or bank transfer &mdash; no queueing, no lost deposits.</p>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="400" height="300" fill="#1B2C52"/>
+      <rect x="40" y="90" width="320" height="180" rx="10" fill="#12203E"/>
+      <rect x="30" y="80" width="340" height="14" fill="#E8A33D"/>
+      <g fill="#D9584B"><rect x="70" y="120" width="34" height="34" rx="3"/><rect x="120" y="120" width="34" height="34" rx="3"/><rect x="170" y="120" width="34" height="34" rx="3"/></g>
+      <g fill="#4C8C6B"><rect x="230" y="120" width="34" height="34" rx="3"/><rect x="280" y="120" width="34" height="34" rx="3"/></g>
+      <g fill="#E8A33D"><rect x="70" y="175" width="34" height="34" rx="3"/><rect x="120" y="175" width="34" height="34" rx="3"/><rect x="230" y="175" width="34" height="34" rx="3"/><rect x="280" y="175" width="34" height="34" rx="3"/></g>
+      <rect x="170" y="175" width="34" height="70" fill="#0E1830"/>
+      <circle cx="330" cy="50" r="24" fill="#E8A33D" opacity="0.6"/>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Hostels near you</h2>
+    <span class="count">{{ hostels|length }} listed</span>
+  </div>
+  <div class="grid">
+    {% for h in hostels %}
+    <a class="card" href="{{ url_for('hostel_detail', hostel_id=h.id) }}">
+      <div class="thumb">
+        <img src="{{ url_for('static', filename='img/' + h.image) }}" style="width:100%;height:100%;object-fit:cover;" alt="{{ h.name }}">
+      </div>
+      <div class="body">
+        <div class="area">{{ h.area }}</div>
+        <h3>{{ h.name }}</h3>
+        <div>
+          {% for a in h.amenities.split(',')[:3] %}<span class="tag">{{ a }}</span>{% endfor %}
+        </div>
+        <div class="price-row">
+          <div class="price">GH₵ {{ h.rooms[1].price_per_semester }}<small>from &middot; per semester</small></div>
+          <span class="mono" style="color:var(--muted);font-size:.8rem;">View &rarr;</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

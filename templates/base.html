@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}NestCampus{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="kente-stripe"></div>
+<nav class="nav">
+  <a href="{{ url_for('index') }}" class="brand">Nest<span>Campus</span></a>
+  <a href="{{ url_for('admin_dashboard') }}" class="btn">Owner dashboard</a>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div>NestCampus &mdash; hostel booking for Greater Accra students.</div>
+  <div class="mono">pilot build</div>
+</footer>
+</body>
+</html>

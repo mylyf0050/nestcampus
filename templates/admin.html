@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Owner dashboard &mdash; NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">Owner dashboard</p>
+  <h1 style="font-size:1.8rem;">Bookings overview</h1>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">{{ bookings|length }}</div><div class="label">Total bookings</div></div>
+    <div class="stat"><div class="num">GH₵ {{ total_revenue }}</div><div class="label">Revenue booked</div></div>
+    <div class="stat"><div class="num">{{ hostels|length }}</div><div class="label">Hostels listed</div></div>
+  </div>
+
+  <h2 style="font-size:1.2rem;margin-bottom:14px;">Recent bookings</h2>
+  <table>
+    <thead><tr><th>Reference</th><th>Student</th><th>Room</th><th>Hostel</th><th>Method</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td class="mono">{{ b.reference }}</td>
+        <td>{{ b.student_name }}<br><span style="color:var(--muted);font-size:.78rem;">{{ b.student_phone }}</span></td>
+        <td>{{ b.room.room_type }}</td>
+        <td>{{ b.room.hostel.name }}</td>
+        <td>{{ b.payment_method }}</td>
+        <td class="mono">GH₵ {{ b.room.price_per_semester }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color:var(--muted);">No bookings yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Room availability</h2>
+  {% for h in hostels %}
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">{{ h.name }}</p>
+    {% for r in h.rooms %}
+    <div class="room-row">
+      <div>{{ r.room_type }}</div>
+      <div class="avail {{ 'low' if r.available <= 3 else '' }}">{{ r.available }} / {{ r.total_slots }} available</div>
+    </div>
+    {% endfor %}
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Book &mdash; NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">Step 1 of 2</p>
+  <h1 style="font-size:1.8rem;">Reserve your room</h1>
+  <p class="sub" style="margin-bottom:26px;">{{ room.room_type }} &middot; {{ room.hostel.name }} &middot; <span class="mono" style="color:var(--gold);">GH₵ {{ room.price_per_semester }} / semester</span></p>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<p style="color:var(--coral);">{{ messages[0] }}</p>{% endif %}
+  {% endwith %}
+
+  <form class="card-form" method="POST">
+    <label for="name">Full name</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Akosua Mensah" required>
+    <label for="phone">Phone number</label>
+    <input type="tel" id="phone" name="phone" placeholder="024 123 4567" required>
+    <div style="margin-top:26px;">
+      <button type="submit" class="btn-gold">Continue to payment &rarr;</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

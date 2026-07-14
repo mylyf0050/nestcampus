@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Payment &mdash; NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">Step 2 of 2</p>
+  <h1 style="font-size:1.8rem;">Choose how to pay</h1>
+
+  <form class="card-form" method="POST" style="max-width:560px;">
+    <input type="hidden" name="name" value="{{ name }}">
+    <input type="hidden" name="phone" value="{{ phone }}">
+
+    <div class="pay-options">
+      <label class="pay-option">
+        <input type="radio" name="method" value="MTN Mobile Money" required onclick="updateSelected(this)">
+        <div class="icon">📱</div>
+        <div><div style="font-weight:600;">MTN Mobile Money</div><div style="color:var(--muted);font-size:.8rem;">Pay directly from your MoMo wallet</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="method" value="Vodafone Cash" onclick="updateSelected(this)">
+        <div class="icon">📱</div>
+        <div><div style="font-weight:600;">Vodafone Cash</div><div style="color:var(--muted);font-size:.8rem;">Pay with your Telecel Cash wallet</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="method" value="AirtelTigo Money" onclick="updateSelected(this)">
+        <div class="icon">📱</div>
+        <div><div style="font-weight:600;">AirtelTigo Money</div><div style="color:var(--muted);font-size:.8rem;">Pay with your AirtelTigo wallet</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="method" value="Bank Card" onclick="updateSelected(this)">
+        <div class="icon">💳</div>
+        <div><div style="font-weight:600;">Debit / Credit Card</div><div style="color:var(--muted);font-size:.8rem;">Visa, Mastercard</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="method" value="Bank Transfer" onclick="updateSelected(this)">
+        <div class="icon">🏦</div>
+        <div><div style="font-weight:600;">Bank Transfer</div><div style="color:var(--muted);font-size:.8rem;">Direct transfer, confirmed manually</div></div>
+      </label>
+    </div>
+
+    <div class="summary-line"><span>{{ room.room_type }}</span><span>{{ room.hostel.name }}</span></div>
+    <div class="summary-line"><span>Semester fee</span><span class="mono">GH₵ {{ room.price_per_semester }}</span></div>
+    <div class="summary-line total"><span>Total due now</span><span class="mono">GH₵ {{ room.price_per_semester }}</span></div>
+
+    <div style="margin-top:20px;">
+      <button type="submit" class="btn-gold">Confirm & pay &rarr;</button>
+    </div>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:14px;">Pilot mode: payment is simulated for this demo. Live payments go through your provider's merchant API.</p>
+  </form>
+</section>
+<script>
+function updateSelected(el){
+  document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+  el.closest('.pay-option').classList.add('selected');
+}
+</script>
+{% endblock %}
