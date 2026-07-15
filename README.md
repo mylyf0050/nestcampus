@@ -76,3 +76,4 @@ Open http://localhost:5000. Without `DATABASE_URL` set, it uses local SQLite aut
 | Owner verification code | Real (email delivery optional) |
 | Reviews, Q&A, complaints | Real |
 | Database persistence | **Needs your action — see top of this file** |
+# Persistence check 2026-07-15T23:00:09Z
