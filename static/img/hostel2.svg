@@ -1,23 +1,81 @@
 <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
-<rect width="400" height="250" fill="#1E3350"/>
-<rect x="0" y="190" width="400" height="60" fill="#182B47"/>
-<rect x="40" y="40" width="150" height="150" rx="6" fill="#12203E"/>
-<rect x="210" y="90" width="150" height="100" rx="6" fill="#12203E"/>
-<g fill="#4C8C6B">
-<rect x="60" y="60" width="26" height="26" rx="2"/>
-<rect x="100" y="60" width="26" height="26" rx="2"/>
-<rect x="140" y="60" width="26" height="26" rx="2"/>
-<rect x="60" y="100" width="26" height="26" rx="2"/>
-<rect x="100" y="100" width="26" height="26" rx="2"/>
-<rect x="140" y="100" width="26" height="26" rx="2"/>
+<defs>
+  <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#233657"/>
+    <stop offset="100%" stop-color="#152541"/>
+  </linearGradient>
+  <linearGradient id="facadeA" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#152541"/>
+    <stop offset="100%" stop-color="#0F1C38"/>
+  </linearGradient>
+  <linearGradient id="facadeB" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#182B4C"/>
+    <stop offset="100%" stop-color="#101E3B"/>
+  </linearGradient>
+  <linearGradient id="win2a" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#7DBB98"/>
+    <stop offset="100%" stop-color="#4C8C6B"/>
+  </linearGradient>
+  <linearGradient id="win2b" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#F4C673"/>
+    <stop offset="100%" stop-color="#E8A33D"/>
+  </linearGradient>
+  <linearGradient id="ground2" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#1E3350"/>
+    <stop offset="100%" stop-color="#0E1830"/>
+  </linearGradient>
+</defs>
+
+<rect width="400" height="250" fill="url(#sky2)"/>
+<circle cx="60" cy="34" r="20" fill="#F4C673" opacity="0.12"/>
+
+<rect x="0" y="210" width="400" height="40" fill="url(#ground2)"/>
+<rect x="0" y="210" width="400" height="4" fill="#0A1226"/>
+
+<!-- taller side block -->
+<rect x="30" y="30" width="150" height="180" rx="4" fill="url(#facadeA)"/>
+<rect x="30" y="30" width="150" height="7" fill="#4C8C6B"/>
+<!-- lower front block, overlapping for depth -->
+<rect x="190" y="90" width="180" height="120" rx="4" fill="url(#facadeB)"/>
+<rect x="190" y="90" width="180" height="7" fill="#E8A33D"/>
+<rect x="176" y="90" width="14" height="120" fill="#0B152C"/>
+
+<g>
+  <rect x="50" y="52" width="24" height="24" rx="2" fill="url(#win2a)"/>
+  <rect x="88" y="52" width="24" height="24" rx="2" fill="#213656"/>
+  <rect x="126" y="52" width="24" height="24" rx="2" fill="url(#win2a)"/>
+
+  <rect x="50" y="90" width="24" height="24" rx="2" fill="#213656"/>
+  <rect x="88" y="90" width="24" height="24" rx="2" fill="url(#win2a)"/>
+  <rect x="126" y="90" width="24" height="24" rx="2" fill="#213656"/>
+
+  <rect x="50" y="128" width="24" height="24" rx="2" fill="url(#win2a)"/>
+  <rect x="88" y="128" width="24" height="24" rx="2" fill="#213656"/>
+  <rect x="126" y="128" width="24" height="24" rx="2" fill="url(#win2a)"/>
+
+  <rect x="50" y="166" width="24" height="24" rx="2" fill="#213656"/>
+  <rect x="88" y="166" width="24" height="24" rx="2" fill="url(#win2a)"/>
+  <rect x="126" y="166" width="24" height="24" rx="2" fill="#213656"/>
 </g>
-<g fill="#E8A33D">
-<rect x="230" y="110" width="26" height="26" rx="2"/>
-<rect x="270" y="110" width="26" height="26" rx="2"/>
-<rect x="310" y="110" width="26" height="26" rx="2"/>
-<rect x="230" y="150" width="26" height="26" rx="2"/>
-<rect x="270" y="150" width="26" height="26" rx="2"/>
+
+<g>
+  <rect x="212" y="112" width="24" height="24" rx="2" fill="url(#win2b)"/>
+  <rect x="250" y="112" width="24" height="24" rx="2" fill="#22345A"/>
+  <rect x="288" y="112" width="24" height="24" rx="2" fill="url(#win2b)"/>
+  <rect x="326" y="112" width="24" height="24" rx="2" fill="#22345A"/>
+
+  <rect x="212" y="150" width="24" height="24" rx="2" fill="#22345A"/>
+  <rect x="250" y="150" width="24" height="24" rx="2" fill="url(#win2b)"/>
+  <rect x="288" y="150" width="24" height="24" rx="2" fill="#22345A"/>
+  <rect x="326" y="150" width="24" height="24" rx="2" fill="url(#win2b)"/>
 </g>
-<rect x="35" y="35" width="160" height="8" fill="#D9584B"/>
-<rect x="205" y="85" width="160" height="8" fill="#D9584B"/>
+
+<!-- entrance on front block -->
+<rect x="258" y="176" width="30" height="34" fill="#0A1226"/>
+<rect x="258" y="176" width="30" height="4" fill="#D9584B"/>
+
+<rect x="240" y="210" width="66" height="6" fill="#2A3F6B"/>
+
+<circle cx="360" cy="200" r="11" fill="#4C8C6B" opacity="0.85"/>
+<rect x="358" y="210" width="4" height="10" fill="#3A6B52"/>
 </svg>
