@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ hostel.name }} &mdash; NestCampus{% endblock %}
+{% block title %}{{ hostel.name }} — NestCampus{% endblock %}
 {% block content %}
 <div class="detail-hero">
   <div class="thumb">
@@ -10,7 +10,12 @@
 
 <section class="section" style="padding-top:0;">
   <p class="eyebrow">{{ hostel.area }}</p>
-  <h1 style="font-size:2rem;">{{ hostel.name }}</h1>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <h1 style="font-size:2rem;margin:0;">{{ hostel.name }}</h1>
+    {% if hostel.avg_rating %}
+    <span class="tag" style="background:var(--surface-2);color:var(--gold);font-size:.85rem;">★ {{ hostel.avg_rating }} ({{ hostel.review_count }} review{{ 's' if hostel.review_count != 1 else '' }})</span>
+    {% endif %}
+  </div>
   <p class="sub" style="max-width:70ch;">{{ hostel.description }}</p>
   <div style="margin:14px 0 30px;">
     {% for a in hostel.amenities.split(',') %}<span class="tag">{{ a }}</span>{% endfor %}
@@ -32,6 +37,43 @@
       {% endif %}
     </div>
   </div>
+  {% endfor %}
+
+  <h2 style="font-size:1.2rem;margin:36px 0 14px;">Questions from students</h2>
+  {% if current_user and current_user.role == 'student' %}
+  <form method="POST" action="{{ url_for('ask_question', hostel_id=hostel.id) }}" style="margin-bottom:20px;max-width:520px;">
+    <input type="text" name="message" placeholder="Ask something about this hostel..." required style="width:70%;padding:10px 12px;border-radius:6px;background:var(--surface);color:var(--paper);border:1px solid rgba(255,255,255,.12);">
+    <button type="submit" class="btn-gold" style="padding:10px 18px;font-size:.85rem;">Ask</button>
+  </form>
+  {% elif not current_user %}
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:20px;"><a href="{{ url_for('login') }}" style="color:var(--gold);">Log in</a> as a student to ask a question.</p>
+  {% endif %}
+
+  {% for q in questions %}
+  <div class="card" style="margin-bottom:12px;">
+    <div class="body">
+      <p style="margin:0 0 6px;">{{ q.message }}</p>
+      {% if q.response %}
+      <p style="color:var(--gold);font-size:.85rem;margin:8px 0 0;">Owner reply: {{ q.response }}</p>
+      {% else %}
+      <p style="color:var(--muted);font-size:.78rem;margin-top:6px;">Awaiting a reply from the hostel owner.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p style="color:var(--muted);font-size:.85rem;">No questions yet — be the first to ask.</p>
+  {% endfor %}
+
+  <h2 style="font-size:1.2rem;margin:36px 0 14px;">Reviews</h2>
+  {% for r in reviews %}
+  <div class="card" style="margin-bottom:12px;">
+    <div class="body">
+      <div style="color:var(--gold);">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</div>
+      {% if r.comment %}<p style="margin:8px 0 0;">{{ r.comment }}</p>{% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p style="color:var(--muted);font-size:.85rem;">No reviews yet.</p>
   {% endfor %}
 </section>
 

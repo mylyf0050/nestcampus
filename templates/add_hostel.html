@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Add hostel &mdash; NestCampus{% endblock %}
+{% block title %}Submit a hostel — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <p class="eyebrow">Owner dashboard</p>
-  <h1 style="font-size:1.8rem;">List a new hostel</h1>
+  <h1 style="font-size:1.8rem;">Submit a hostel for review</h1>
+  <p class="sub" style="max-width:60ch;">Fill in your hostel's details and suggested pricing. NestCampus reviews every listing — including price and room availability — before it goes live to students.</p>
 
   {% with messages = get_flashed_messages() %}
-    {% if messages %}<p style="color:var(--coral);">{{ messages[0] }}</p>{% endif %}
+    {% for msg in messages %}<p style="color:var(--coral);">{{ msg }}</p>{% endfor %}
   {% endwith %}
 
-  <form class="card-form" method="POST" style="max-width:560px;">
+  <form class="card-form" method="POST" enctype="multipart/form-data" style="max-width:560px;">
     <label for="name">Hostel name</label>
     <input type="text" id="name" name="name" placeholder="e.g. Sunrise Lodge" required>
     <label for="area">Area / landmark</label>
@@ -18,6 +19,14 @@
     <input type="text" id="description" name="description" placeholder="What makes it worth choosing" required>
     <label for="amenities">Amenities (comma separated)</label>
     <input type="text" id="amenities" name="amenities" placeholder="Wi-Fi, Backup power, Security">
+    <label for="photo">Photo</label>
+    <input type="file" id="photo" name="photo" accept=".jpg,.jpeg,.png,.webp">
+    <p style="color:var(--muted);font-size:.78rem;margin-top:6px;">JPG, PNG, or WEBP, up to 5MB. Leave blank to use a placeholder for now.</p>
+    <label for="suggested_price">Suggested price per semester (GH₵)</label>
+    <input type="text" id="suggested_price" name="suggested_price" placeholder="e.g. 1800">
+    <label for="suggested_slots">Suggested number of room slots</label>
+    <input type="text" id="suggested_slots" name="suggested_slots" placeholder="e.g. 10">
+    <p style="color:var(--muted);font-size:.78rem;margin-top:6px;">These are suggestions — NestCampus may adjust pricing and room counts before publishing.</p>
     <label for="lat">Latitude</label>
     <input type="text" id="lat" name="lat" placeholder="5.6500">
     <label for="lng">Longitude</label>
@@ -25,7 +34,7 @@
     <p style="color:var(--muted);font-size:.78rem;margin-top:8px;">Tip: right-click the hostel's location in Google Maps and copy the coordinates shown.</p>
 
     <div style="margin-top:22px;">
-      <button type="submit" class="btn-gold">Add hostel</button>
+      <button type="submit" class="btn-gold">Submit for review</button>
     </div>
   </form>
 </section>

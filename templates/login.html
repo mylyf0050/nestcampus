@@ -1,23 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Log in &mdash; NestCampus{% endblock %}
+{% block title %}Log in — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <p class="eyebrow">Welcome back</p>
   <h1 style="font-size:1.8rem;">Log in</h1>
 
   {% with messages = get_flashed_messages() %}
-    {% if messages %}<p style="color:var(--coral);">{{ messages[0] }}</p>{% endif %}
+    {% for msg in messages %}<p style="color:var(--coral);">{{ msg }}</p>{% endfor %}
   {% endwith %}
 
   <form class="card-form" method="POST">
+    <label>Log in as</label>
+    <div class="pay-options" style="margin-top:0;">
+      <label class="pay-option">
+        <input type="radio" name="role" value="student" required onclick="updateSelected(this)" checked>
+        <div class="icon">🎓</div>
+        <div><div style="font-weight:600;">Student</div></div>
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="role" value="owner" onclick="updateSelected(this)">
+        <div class="icon">🏠</div>
+        <div><div style="font-weight:600;">Hostel owner</div></div>
+      </label>
+    </div>
+
     <label for="email">Email</label>
     <input type="text" id="email" name="email" placeholder="you@example.com" required>
     <label for="password">Password</label>
-    <input type="text" id="password" name="password" placeholder="Your password" required>
+    <input type="password" id="password" name="password" placeholder="Your password" required>
     <div style="margin-top:22px;">
       <button type="submit" class="btn-gold">Log in</button>
     </div>
     <p style="color:var(--muted);font-size:.85rem;margin-top:16px;">Don't have an account? <a href="{{ url_for('signup') }}" style="color:var(--gold);">Sign up</a></p>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:6px;">NestCampus admin? Log in as owner won't work for admin accounts — contact the platform team.</p>
   </form>
 </section>
+<script>
+function updateSelected(el){
+  document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+  el.closest('.pay-option').classList.add('selected');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const checked = document.querySelector('input[name=role]:checked');
+  if (checked) checked.closest('.pay-option').classList.add('selected');
+});
+</script>
 {% endblock %}

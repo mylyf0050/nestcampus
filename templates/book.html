@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Book &mdash; NestCampus{% endblock %}
+{% block title %}Book — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <p class="eyebrow">Step 1 of 2</p>
@@ -7,7 +7,7 @@
   <p class="sub" style="margin-bottom:26px;">{{ room.room_type }} &middot; {{ room.hostel.name }} &middot; <span class="mono" style="color:var(--gold);">GH₵ {{ room.price_per_semester }} / semester</span></p>
 
   {% with messages = get_flashed_messages() %}
-    {% if messages %}<p style="color:var(--coral);">{{ messages[0] }}</p>{% endif %}
+    {% for msg in messages %}<p style="color:var(--coral);">{{ msg }}</p>{% endfor %}
   {% endwith %}
 
   <form class="card-form" method="POST">
@@ -15,9 +15,24 @@
     <input type="text" id="name" name="name" placeholder="e.g. Akosua Mensah" value="{{ prefill_name }}" required>
     <label for="phone">Phone number</label>
     <input type="tel" id="phone" name="phone" placeholder="024 123 4567" required>
+    <label for="semesters">Number of semesters</label>
+    <select id="semesters" name="semesters" onchange="updateTotal()" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:var(--bg);color:var(--paper);font-size:.95rem;">
+      <option value="1">1 semester</option>
+      <option value="2">2 semesters</option>
+      <option value="3">3 semesters</option>
+      <option value="4">4 semesters</option>
+    </select>
+    <p style="color:var(--muted);font-size:.85rem;margin-top:10px;">Total due: <span id="total" class="mono" style="color:var(--gold);">GH₵ {{ room.price_per_semester }}</span></p>
     <div style="margin-top:26px;">
       <button type="submit" class="btn-gold">Continue to payment &rarr;</button>
     </div>
   </form>
 </section>
+<script>
+const pricePerSemester = {{ room.price_per_semester }};
+function updateTotal(){
+  const sem = document.getElementById('semesters').value;
+  document.getElementById('total').textContent = 'GH₵ ' + (pricePerSemester * sem);
+}
+</script>
 {% endblock %}

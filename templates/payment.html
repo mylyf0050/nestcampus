@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Payment &mdash; NestCampus{% endblock %}
+{% block title %}Payment — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <p class="eyebrow">Step 2 of 2</p>
   <h1 style="font-size:1.8rem;">Choose how to pay</h1>
 
-  <form class="card-form" method="POST" style="max-width:560px;">
-    <input type="hidden" name="name" value="{{ name }}">
-    <input type="hidden" name="phone" value="{{ phone }}">
+  {% with messages = get_flashed_messages() %}
+    {% for msg in messages %}<p style="color:var(--coral);">{{ msg }}</p>{% endfor %}
+  {% endwith %}
 
+  <form class="card-form" method="POST" style="max-width:560px;">
     <div class="pay-options">
       <label class="pay-option">
         <input type="radio" name="method" value="MTN Mobile Money" required onclick="updateSelected(this)">
@@ -37,9 +38,13 @@
       </label>
     </div>
 
+    <label for="transaction_ref">Transaction ID / MoMo number used</label>
+    <input type="text" id="transaction_ref" name="transaction_ref" placeholder="e.g. 024XXXXXXX or transaction reference" required>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:6px;">This is the reference from your payment provider &mdash; enter it exactly as shown on your confirmation SMS.</p>
+
     <div class="summary-line"><span>{{ room.room_type }}</span><span>{{ room.hostel.name }}</span></div>
-    <div class="summary-line"><span>Semester fee</span><span class="mono">GH₵ {{ room.price_per_semester }}</span></div>
-    <div class="summary-line total"><span>Total due now</span><span class="mono">GH₵ {{ room.price_per_semester }}</span></div>
+    <div class="summary-line"><span>{{ semesters }} semester{{ 's' if semesters != 1 else '' }}</span><span class="mono">GH₵ {{ room.price_per_semester }} &times; {{ semesters }}</span></div>
+    <div class="summary-line total"><span>Total due now</span><span class="mono">GH₵ {{ total_amount }}</span></div>
 
     <div style="margin-top:20px;">
       <button type="submit" class="btn-gold">Confirm & pay &rarr;</button>
@@ -47,6 +52,18 @@
     <p style="color:var(--muted);font-size:.78rem;margin-top:14px;">Pilot mode: payment is simulated for this demo. Live payments go through your provider's merchant API.</p>
   </form>
 </section>
+
+{% if payment_failed %}
+<div id="payment-fail-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon">✕</div>
+    <h3>Transaction failed</h3>
+    <p style="color:var(--muted);">We couldn't verify that transaction reference. Double-check the ID or MoMo number from your payment confirmation SMS and try again.</p>
+    <button class="btn-gold" onclick="document.getElementById('payment-fail-modal').remove()">Try again</button>
+  </div>
+</div>
+{% endif %}
+
 <script>
 function updateSelected(el){
   document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));

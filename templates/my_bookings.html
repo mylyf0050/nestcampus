@@ -1,25 +1,51 @@
 {% extends "base.html" %}
-{% block title %}My bookings &mdash; NestCampus{% endblock %}
+{% block title %}My bookings — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <p class="eyebrow">Your account</p>
   <h1 style="font-size:1.8rem;">My bookings</h1>
 
+  {% with messages = get_flashed_messages() %}
+    {% for msg in messages %}<p style="color:var(--green);">{{ msg }}</p>{% endfor %}
+  {% endwith %}
+
   {% if bookings %}
-  <table>
-    <thead><tr><th>Reference</th><th>Hostel</th><th>Room</th><th>Method</th><th>Amount</th></tr></thead>
-    <tbody>
-      {% for b in bookings %}
-      <tr>
-        <td class="mono">{{ b.reference }}</td>
-        <td>{{ b.room.hostel.name }}</td>
-        <td>{{ b.room.room_type }}</td>
-        <td>{{ b.payment_method }}</td>
-        <td class="mono">GH₵ {{ b.room.price_per_semester }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  {% for b in bookings %}
+  <div class="card" style="margin-bottom:16px;">
+    <div class="body">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <h3 style="margin:0;">{{ b.room.hostel.name }}</h3>
+        <span class="tag" style="{{ 'background:var(--green);color:#fff;' if b.status=='completed' else '' }}">{{ b.status }}</span>
+      </div>
+      <p style="color:var(--muted);font-size:.85rem;margin:6px 0;">{{ b.room.room_type }} &middot; {{ b.semesters }} semester{{ 's' if b.semesters != 1 else '' }} &middot; GH₵ {{ b.total_amount }} &middot; ref {{ b.reference }}</p>
+
+      {% if b.status == 'completed' and b.id not in reviewed_ids %}
+      <form method="POST" action="{{ url_for('leave_review', booking_id=b.id) }}" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
+        <label style="margin-top:0;">Rate your stay</label>
+        <select name="rating" style="padding:8px;border-radius:6px;background:var(--bg);color:var(--paper);border:1px solid rgba(255,255,255,.15);">
+          <option value="5">★★★★★ Excellent</option>
+          <option value="4">★★★★ Good</option>
+          <option value="3">★★★ Okay</option>
+          <option value="2">★★ Poor</option>
+          <option value="1">★ Very poor</option>
+        </select>
+        <input type="text" name="comment" placeholder="Optional comment" style="width:100%;margin-top:10px;padding:10px;border-radius:6px;background:var(--bg);color:var(--paper);border:1px solid rgba(255,255,255,.15);">
+        <button type="submit" class="btn-gold" style="margin-top:10px;padding:8px 18px;font-size:.85rem;">Submit review</button>
+      </form>
+      {% elif b.id in reviewed_ids %}
+      <p style="color:var(--muted);font-size:.8rem;margin-top:10px;">You've reviewed this stay. Thanks!</p>
+      {% endif %}
+
+      {% if b.status == 'active' %}
+      <form method="POST" action="{{ url_for('complain', hostel_id=b.room.hostel_id) }}" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">
+        <label style="margin-top:0;font-size:.8rem;">Have an issue with this hostel?</label>
+        <input type="text" name="message" placeholder="Describe the issue" style="width:100%;padding:10px;border-radius:6px;background:var(--bg);color:var(--paper);border:1px solid rgba(255,255,255,.15);">
+        <button type="submit" class="btn-outline" style="margin-top:10px;padding:8px 18px;font-size:.85rem;">Send complaint to owner</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
   {% else %}
   <p style="color:var(--muted);">You haven't booked a room yet. <a href="{{ url_for('index') }}" style="color:var(--gold);">Browse hostels</a>.</p>
   {% endif %}

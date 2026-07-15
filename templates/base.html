@@ -7,13 +7,17 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+<div id="page-loader"><div class="loader-mark">Nest<span>Campus</span></div><div class="loader-bar"><div></div></div></div>
+
 <div class="kente-stripe"></div>
 <nav class="nav">
   <a href="{{ url_for('index') }}" class="brand">Nest<span>Campus</span></a>
-  <div style="display:flex;align-items:center;gap:14px;">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
     {% if current_user %}
       {% if current_user.role == 'owner' %}
         <a href="{{ url_for('admin_dashboard') }}" class="btn-outline" style="padding:8px 16px;border-radius:999px;">Owner dashboard</a>
+      {% elif current_user.role == 'superadmin' %}
+        <a href="{{ url_for('superadmin_dashboard') }}" class="btn-outline" style="padding:8px 16px;border-radius:999px;">Admin panel</a>
       {% else %}
         <a href="{{ url_for('my_bookings') }}" class="btn-outline" style="padding:8px 16px;border-radius:999px;">My bookings</a>
       {% endif %}
@@ -29,7 +33,9 @@
 
 <footer>
   <div>NestCampus &mdash; hostel booking for Greater Accra students.</div>
-  <div class="mono">pilot build</div>
+  <a href="{{ url_for('general_feedback') }}" class="mono" style="color:var(--muted);">Send feedback</a>
 </footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

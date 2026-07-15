@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Admin panel — NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">NestCampus Admin</p>
+  <h1 style="font-size:1.8rem;">Platform control</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% for msg in messages %}<p style="color:var(--green);">{{ msg }}</p>{% endfor %}
+  {% endwith %}
+
+  <h2 style="font-size:1.2rem;margin:28px 0 14px;">Pending owner verifications</h2>
+  {% if pending_owners %}
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Code</th><th></th></tr></thead>
+    <tbody>
+      {% for o in pending_owners %}
+      <tr>
+        <td>{{ o.name }}</td>
+        <td>{{ o.email }}</td>
+        <td class="mono" style="color:var(--gold);">{{ o.verification_code }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('superadmin_verify_owner', user_id=o.id) }}" style="display:inline;">
+            <button type="submit" class="btn-outline" style="padding:6px 14px;font-size:.8rem;">Mark verified</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:var(--muted);">No owners waiting on verification.</p>
+  {% endif %}
+
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Pending hostel listings ({{ pending_hostels|length }})</h2>
+  {% if pending_hostels %}
+  <div class="grid">
+    {% for h in pending_hostels %}
+    <div class="card">
+      <div class="thumb"><img src="{{ url_for('static', filename='img/' + h.image) }}" style="width:100%;height:100%;object-fit:cover;" alt="{{ h.name }}"></div>
+      <div class="body">
+        <div class="area">{{ h.area }}</div>
+        <h3>{{ h.name }}</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Owner: {{ h.owner.name if h.owner else 'Unknown' }} {% if h.owner and not h.owner.is_verified %}<span class="tag" style="background:var(--coral);color:#fff;">unverified</span>{% endif %}</p>
+        <a href="{{ url_for('superadmin_edit_hostel', hostel_id=h.id) }}" class="btn-gold" style="display:inline-block;margin-top:10px;">Review & publish</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color:var(--muted);">Nothing pending review.</p>
+  {% endif %}
+
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Published hostels ({{ published_hostels|length }})</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Area</th><th>Owner</th><th></th></tr></thead>
+    <tbody>
+      {% for h in published_hostels %}
+      <tr>
+        <td>{{ h.name }}</td>
+        <td>{{ h.area }}</td>
+        <td>{{ h.owner.name if h.owner else '—' }}</td>
+        <td><a href="{{ url_for('superadmin_edit_hostel', hostel_id=h.id) }}" style="color:var(--gold);">Edit &rarr;</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Open feedback ({{ open_feedback|length }})</h2>
+  {% if open_feedback %}
+  <table>
+    <thead><tr><th>From</th><th>Category</th><th>Hostel</th><th>Message</th><th></th></tr></thead>
+    <tbody>
+      {% for fb in open_feedback %}
+      <tr>
+        <td>{{ fb.from_user.name }}</td>
+        <td>{{ fb.category }}</td>
+        <td>{{ fb.hostel.name if fb.hostel else '—' }}</td>
+        <td style="max-width:280px;">{{ fb.message }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('superadmin_resolve_feedback', feedback_id=fb.id) }}">
+            <button type="submit" class="btn-outline" style="padding:6px 14px;font-size:.8rem;">Mark resolved</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:var(--muted);">No open feedback.</p>
+  {% endif %}
+</section>
+{% endblock %}

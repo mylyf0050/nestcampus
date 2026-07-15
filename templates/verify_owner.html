@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Verify your account — NestCampus{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">One more step</p>
+  <h1 style="font-size:1.8rem;">Verify your owner account</h1>
+  <p class="sub" style="max-width:60ch;">NestCampus verifies every hostel owner before their listings go live. We've been notified of your signup — once we've confirmed who you are, we'll send you a 6-digit code by phone or email. Enter it below to unlock your dashboard.</p>
+
+  {% with messages = get_flashed_messages() %}
+    {% for msg in messages %}<p style="color:var(--coral);margin-top:14px;">{{ msg }}</p>{% endfor %}
+  {% endwith %}
+
+  <form class="card-form" method="POST" style="max-width:420px;">
+    <label for="code">Verification code</label>
+    <input type="text" id="code" name="code" placeholder="6-digit code" maxlength="6" required>
+    <div style="margin-top:22px;">
+      <button type="submit" class="btn-gold">Verify</button>
+    </div>
+  </form>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-top:20px;">In the meantime, you can still <a href="{{ url_for('add_hostel') }}" style="color:var(--gold);">submit a hostel for review</a> — it just won't be published until you're verified.</p>
+</section>
+{% endblock %}

@@ -1,13 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Confirmed &mdash; NestCampus{% endblock %}
+{% block title %}Confirmed — NestCampus{% endblock %}
 {% block content %}
 <div class="confirm-box">
   <div class="check">✓</div>
   <h1 style="font-size:1.6rem;">Booking confirmed</h1>
-  <p class="sub" style="margin:12px auto 22px;">{{ booking.student_name }}, your room at <strong>{{ booking.room.hostel.name }}</strong> is reserved for the semester.</p>
+  <p class="sub" style="margin:12px auto 22px;">{{ booking.student_name }}, your room at <strong>{{ booking.room.hostel.name }}</strong> is reserved for {{ booking.semesters }} semester{{ 's' if booking.semesters != 1 else '' }}.</p>
   <div class="summary-line"><span>Room</span><span>{{ booking.room.room_type }}</span></div>
+  <div class="summary-line"><span>Semesters</span><span>{{ booking.semesters }}</span></div>
   <div class="summary-line"><span>Paid via</span><span>{{ booking.payment_method }}</span></div>
-  <div class="summary-line total"><span>Amount</span><span class="mono">GH₵ {{ booking.room.price_per_semester }}</span></div>
+  <div class="summary-line"><span>Transaction ID</span><span class="mono">{{ booking.transaction_ref }}</span></div>
+  <div class="summary-line total"><span>Amount</span><span class="mono">GH₵ {{ booking.total_amount }}</span></div>
   <p style="margin-top:22px;color:var(--muted);font-size:.85rem;">Reference number</p>
   <p class="ref">{{ booking.reference }}</p>
   <a href="{{ url_for('index') }}" class="btn-outline" style="display:inline-block;margin-top:24px;">Back to home</a>

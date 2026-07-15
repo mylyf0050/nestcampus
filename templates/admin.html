@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Owner dashboard &mdash; NestCampus{% endblock %}
+{% block title %}Owner dashboard — NestCampus{% endblock %}
 {% block content %}
 <section class="section">
   <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;">
@@ -7,14 +7,20 @@
       <p class="eyebrow">Owner dashboard</p>
       <h1 style="font-size:1.8rem;">Bookings overview</h1>
     </div>
-    <a href="{{ url_for('add_hostel') }}" class="btn-gold" style="height:fit-content;">+ Add hostel</a>
+    <a href="{{ url_for('add_hostel') }}" class="btn-gold" style="height:fit-content;">+ Submit hostel</a>
   </div>
 
+  {% if current_user and not current_user.is_verified %}
+  <p style="background:var(--surface-2);border:1px solid var(--coral);color:var(--paper);padding:14px 18px;border-radius:10px;margin-top:16px;">
+    Your account isn't verified yet. Listings you submit stay in review until you're verified — <a href="{{ url_for('verify_owner') }}" style="color:var(--gold);">enter your code here</a>.
+  </p>
+  {% endif %}
+
   {% with messages = get_flashed_messages() %}
-    {% if messages %}<p style="color:var(--green);margin-top:14px;">{{ messages[0] }}</p>{% endif %}
+    {% for msg in messages %}<p style="color:var(--green);margin-top:14px;">{{ msg }}</p>{% endfor %}
   {% endwith %}
 
-  <div class="stat-row">
+  <div class="stat-row" style="margin-top:22px;">
     <div class="stat"><div class="num">{{ bookings|length }}</div><div class="label">Total bookings</div></div>
     <div class="stat"><div class="num">GH₵ {{ total_revenue }}</div><div class="label">Revenue booked</div></div>
     <div class="stat"><div class="num">{{ hostels|length }}</div><div class="label">Hostels listed</div></div>
@@ -22,7 +28,7 @@
 
   <h2 style="font-size:1.2rem;margin-bottom:14px;">Recent bookings</h2>
   <table>
-    <thead><tr><th>Reference</th><th>Student</th><th>Room</th><th>Hostel</th><th>Method</th><th>Amount</th></tr></thead>
+    <thead><tr><th>Reference</th><th>Student</th><th>Room</th><th>Hostel</th><th>Sem.</th><th>Amount</th><th>Status</th><th></th></tr></thead>
     <tbody>
       {% for b in bookings %}
       <tr>
@@ -30,24 +36,63 @@
         <td>{{ b.student_name }}<br><span style="color:var(--muted);font-size:.78rem;">{{ b.student_phone }}</span></td>
         <td>{{ b.room.room_type }}</td>
         <td>{{ b.room.hostel.name }}</td>
-        <td>{{ b.payment_method }}</td>
-        <td class="mono">GH₵ {{ b.room.price_per_semester }}</td>
+        <td>{{ b.semesters }}</td>
+        <td class="mono">GH₵ {{ b.total_amount }}</td>
+        <td><span class="tag" style="{{ 'background:var(--green);color:#fff;' if b.status=='completed' else '' }}">{{ b.status }}</span></td>
+        <td>
+          {% if b.status == 'active' %}
+          <form method="POST" action="{{ url_for('checkout_booking', booking_id=b.id) }}">
+            <button type="submit" class="btn-outline" style="padding:6px 12px;font-size:.75rem;">Mark checked-out</button>
+          </form>
+          {% endif %}
+        </td>
       </tr>
       {% else %}
-      <tr><td colspan="6" style="color:var(--muted);">No bookings yet.</td></tr>
+      <tr><td colspan="8" style="color:var(--muted);">No bookings yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Room availability</h2>
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Your hostels</h2>
   {% for h in hostels %}
-    <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">{{ h.name }}</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <p style="color:var(--muted);font-size:.85rem;">{{ h.name }} <span class="tag" style="{{ 'background:var(--green);color:#fff;' if h.status=='published' else '' }}">{{ h.status }}</span></p>
+      <a href="{{ url_for('update_hostel_photo', hostel_id=h.id) }}" style="color:var(--gold);font-size:.8rem;">Update photo &rarr;</a>
+    </div>
     {% for r in h.rooms %}
     <div class="room-row">
       <div>{{ r.room_type }}</div>
-      <div class="avail {{ 'low' if r.available <= 3 else '' }}">{{ r.available }} / {{ r.total_slots }} available</div>
+      <div class="avail {{ 'low' if r.available <= 3 else '' }}">{{ r.available }} / {{ r.total_slots }} available &middot; GH₵ {{ r.price_per_semester }}/sem</div>
     </div>
     {% endfor %}
+  {% else %}
+  <p style="color:var(--muted);">You haven't submitted a hostel yet.</p>
   {% endfor %}
+
+  <h2 style="font-size:1.2rem;margin:32px 0 14px;">Questions & complaints ({{ feedback_items|length }})</h2>
+  {% if feedback_items %}
+  {% for fb in feedback_items %}
+  <div class="card" style="margin-bottom:14px;">
+    <div class="body">
+      <div style="display:flex;justify-content:space-between;">
+        <span class="tag">{{ fb.category }}</span>
+        <span class="tag" style="{{ 'background:var(--green);color:#fff;' if fb.status=='resolved' else '' }}">{{ fb.status }}</span>
+      </div>
+      <p style="margin:10px 0 4px;">{{ fb.message }}</p>
+      <p style="color:var(--muted);font-size:.78rem;">from {{ fb.from_user.name }} &middot; {{ fb.hostel.name if fb.hostel else '' }}</p>
+      {% if fb.response %}
+      <p style="margin-top:10px;color:var(--gold);font-size:.85rem;">Your reply: {{ fb.response }}</p>
+      {% else %}
+      <form method="POST" action="{{ url_for('respond_feedback', feedback_id=fb.id) }}" style="margin-top:10px;">
+        <input type="text" name="response" placeholder="Type a reply..." style="width:70%;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:var(--bg);color:var(--paper);">
+        <button type="submit" class="btn-gold" style="padding:8px 16px;font-size:.82rem;">Reply</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p style="color:var(--muted);">No questions or complaints yet.</p>
+  {% endif %}
 </section>
 {% endblock %}

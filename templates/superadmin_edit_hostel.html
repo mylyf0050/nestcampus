@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ hostel.name }} — NestCampus Admin{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">NestCampus Admin &middot; {{ hostel.status }}</p>
+  <h1 style="font-size:1.8rem;">{{ hostel.name }}</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% for msg in messages %}<p style="color:var(--green);">{{ msg }}</p>{% endfor %}
+  {% endwith %}
+
+  <div class="thumb" style="max-width:420px;aspect-ratio:16/10;border-radius:var(--radius);overflow:hidden;margin:16px 0;">
+    <img src="{{ url_for('static', filename='img/' + hostel.image) }}" style="width:100%;height:100%;object-fit:cover;" alt="{{ hostel.name }}">
+  </div>
+
+  <form class="card-form" method="POST" enctype="multipart/form-data" style="max-width:600px;">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" value="{{ hostel.name }}" required>
+    <label for="area">Area</label>
+    <input type="text" id="area" name="area" value="{{ hostel.area }}" required>
+    <label for="description">Description</label>
+    <input type="text" id="description" name="description" value="{{ hostel.description }}" required>
+    <label for="amenities">Amenities</label>
+    <input type="text" id="amenities" name="amenities" value="{{ hostel.amenities }}">
+    <label for="photo">Replace photo</label>
+    <input type="file" id="photo" name="photo" accept=".jpg,.jpeg,.png,.webp">
+    <label for="lat">Latitude</label>
+    <input type="text" id="lat" name="lat" value="{{ hostel.lat }}">
+    <label for="lng">Longitude</label>
+    <input type="text" id="lng" name="lng" value="{{ hostel.lng }}">
+
+    <h2 style="font-size:1.1rem;margin:26px 0 12px;">Rooms & pricing</h2>
+    {% for room in hostel.rooms %}
+    <div class="room-row" style="flex-wrap:wrap;gap:10px;">
+      <div style="min-width:160px;">{{ room.room_type }}</div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <label style="margin:0;font-size:.75rem;">Price/sem</label>
+        <input type="text" name="price_{{ room.id }}" value="{{ room.price_per_semester }}" style="width:100px;padding:8px;">
+        <label style="margin:0;font-size:.75rem;">Total slots</label>
+        <input type="text" name="slots_{{ room.id }}" value="{{ room.total_slots }}" style="width:80px;padding:8px;">
+        <span style="color:var(--muted);font-size:.78rem;">({{ room.booked_slots }} booked)</span>
+      </div>
+    </div>
+    {% endfor %}
+
+    <p style="color:var(--muted);font-size:.85rem;margin-top:16px;">Add a new room type (optional)</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <input type="text" name="new_room_type" placeholder="e.g. 3 in a room" style="flex:1;min-width:140px;">
+      <input type="text" name="new_room_price" placeholder="Price/sem" style="width:110px;">
+      <input type="text" name="new_room_slots" placeholder="Slots" style="width:80px;">
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;">
+      <button type="submit" name="publish" value="0" class="btn-outline">Save changes</button>
+      <button type="submit" name="publish" value="1" class="btn-gold">Save & publish</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
