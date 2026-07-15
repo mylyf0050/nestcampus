@@ -15,8 +15,10 @@ app = Flask(__name__)
 
 # ---------- config (env-driven so nothing sensitive lives in code) ----------
 db_url = os.environ.get('DATABASE_URL', 'sqlite:///nestcampus.db')
-if db_url.startswith('postgres://'):  # Render/Heroku-style URLs need the +psycopg2 driver prefix
-    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+if db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql+psycopg://', 1)
+elif db_url.startswith('postgresql://'):
+    db_url = db_url.replace('postgresql://', 'postgresql+psycopg://', 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'nestcampus-dev-key')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max upload
